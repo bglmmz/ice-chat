@@ -1,0 +1,82 @@
+// 所有子项目的通用配置
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+
+    // JVM 版本号要求
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    // java编译的时候缺省状态下会因为中文字符而失败
+    [compileJava,compileTestJava,javadoc]*.options*.encoding = 'UTF-8'
+
+    //定义版本号
+    ext {
+        iceVersion = '3.6.3'
+    }
+
+    repositories {
+        maven {
+            url "http://maven.aliyun.com/nexus/content/groups/public/"
+        }
+    }
+
+    jar {
+        manifest {
+            attributes("Implementation-Title": "Gradle")
+        }
+    }
+
+    configurations {
+        // 所有需要忽略的包定义在此
+        all*.exclude group: 'commons-httpclient'
+        all*.exclude group: 'commons-logging'
+        all*.exclude group: 'commons-beanutils', module: 'commons-beanutils'
+    }
+
+    dependencies {
+        // 通用依赖
+        compile(
+                "com.zeroc:ice:$iceVersion",
+                "com.zeroc:glacier2:$iceVersion",
+                "org.apache.commons:commons-lang3:3.5",
+                "commons-beanutils:commons-beanutils:1.9.3",
+                "commons-codec:commons-codec:1.10",
+                "commons-collections:commons-collections:3.2.2"
+        )
+
+        // 依赖maven中不存在的jar
+        ext.jarTree = fileTree(dir: 'libs', include: '**/*.jar')
+        ext.rootProjectLibs = new File(rootProject.rootDir, 'libs').getAbsolutePath()
+        ext.jarTree += fileTree(dir: rootProjectLibs, include: '**/*.jar')
+
+        compile jarTree
+
+        // 测试依赖
+        testCompile(
+                "junit:junit:4.11"
+        )
+    }
+}
+
+def clientJar = project(':client').buildDir
+def serverJar = project(':server').buildDir
+
+task installAll {
+    dependsOn ':server:install'
+    dependsOn ':client:install'
+    copy{
+        from "${clientJar}/libs"
+        into "out"
+    }
+    copy{
+        from "${serverJar}/libs"
+        into "out"
+    }
+    copy{
+        from "./config"
+        into "out/config"
+    }
+
+}

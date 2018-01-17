@@ -1,0 +1,46 @@
+archivesBaseName = "ice-chat-server"
+
+group 'com.joey.ice.chat'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+
+dependencies {
+    compile project(":slice")
+}
+
+// 把所有依赖包打入一个fat.jar：
+/*buildscript {
+    repositories {
+        maven {
+            url "http://maven.aliyun.com/nexus/content/groups/public/"
+        }
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
+    }
+}
+apply plugin: 'com.github.johnrengelman.shadow'*/
+
+
+jar{
+    manifest {
+        attributes("Main-Class" : "com.joey.ice.chat.server.ChatServer",
+                "Class-Path" : configurations.runtime.collect { "lib/$it.name"}.join(' ')
+        )
+    }
+}
+
+task copyJars(type:Copy, overwrite: true, dependsOn: jar) {
+    from configurations.runtime
+    into "${buildDir}/libs/lib"
+
+}
+
+
+
+task install(type: Copy, overwrite: true, dependsOn: copyJars) {
+
+}

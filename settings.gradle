@@ -1,0 +1,7 @@
+rootProject.name = 'ice-chat'
+include 'slice'
+project(':slice').projectDir = new File('slice')
+include 'server'
+project(':server').projectDir = new File('server')
+include 'client'
+project(':client').projectDir = new File('client')

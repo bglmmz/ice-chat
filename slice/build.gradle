@@ -1,0 +1,28 @@
+archivesBaseName = "ice-chat-slice"
+group 'com.joey.ice.chat'
+
+
+buildscript {
+    repositories {
+        maven {
+            url "http://maven.aliyun.com/nexus/content/groups/public/"
+        }
+        flatDir {
+            name "local"
+            dirs "D:/Java/lib"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.com.zeroc.gradle.ice-builder:slice:1.4.4"
+    }
+}
+
+apply plugin: "com.zeroc.gradle.ice-builder.slice"
+apply plugin: 'java'
+
+slice {
+    java {
+        srcDir = './src/main/slice'
+        output = new File("./src/main/java")
+    }
+}

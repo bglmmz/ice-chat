@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Implementation-Title: Gradle
+Class-Path: lib/ice-3.6.3.jar lib/glacier2-3.6.3.jar lib/commons-lang3
+ -3.5.jar lib/commons-codec-1.10.jar lib/commons-collections-3.2.2.jar
+  lib/ice-chat-slice.jar
+Main-Class: com.joey.ice.chat.server.ChatServer
+
